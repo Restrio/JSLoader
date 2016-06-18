@@ -4,19 +4,20 @@ requirejs.config({
   "paths": {
     "app": "app",
     "lib": "lib",
-    "tim": "app/tim",
-    "jquery": "lib/jquery",
-    "jspattern": "app/jspattern",
-    "extensionLoader": "app/extensionLoader"
+    "appMain": "app/appMain",
+    "extensionLoader": "app/extensionLoader",
+    "extensions": "app/extensions",
+    "exLib": "extensions/lib",
+    "jquery": "lib/jquery"
   },
   "map": {
     "*": { "jquery": "jquery" }
   },
   "shim": {
     //dependecies here
-    "jspattern": ["jquery"],
+    "appMain": ["jquery"],
     "extensionLoader": ["jquery"]
   }
 });
-requirejs(["jspattern"]);
+requirejs(["appMain"]);
 requirejs(["extensionLoader"]);

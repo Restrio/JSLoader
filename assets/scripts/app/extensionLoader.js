@@ -11,7 +11,7 @@ define(["jquery"], function (jQuery) {
      */
     var extensionDependencies = {
       ".Main": {
-        "extensions": [],
+        "extensions": [""],
         "callback": function() {
 
         }
