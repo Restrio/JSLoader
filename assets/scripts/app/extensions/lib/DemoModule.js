@@ -1,5 +1,7 @@
 "use strict";
-define([], function () {
+define(["jquery"], function (jQuery) {
+  var $j = jQuery.noConflict();
+
   return (function() {
     var _object;
 
