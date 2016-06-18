@@ -13,7 +13,6 @@ requirejs.config({
     "*": { "jquery": "jquery" }
   },
   "shim": {
-    //dependecies here
     "appMain": ["jquery"],
     "extensionLoader": ["jquery"]
   }

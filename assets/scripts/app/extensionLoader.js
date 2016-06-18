@@ -7,7 +7,8 @@ define(["jquery"], function (jQuery) {
      * SELECTOR : EXTENSION_PATH
      *
      * Selector:       The required element for loading the extension
-     * Extension_Path: Path to the Javascript-Extension
+     * Extensions:     Path to the Javascript-Extension
+     * Callback:       Callback will be executed after successful extension load
      */
     var extensionDependencies = {
       "#moveable": {

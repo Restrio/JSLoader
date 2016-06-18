@@ -10,22 +10,36 @@ define(["jquery"], function (jQuery) {
      * @param {number} px - pixels to move
      * @param {string} axis - top or left
      */
-    function _move(px, axis, callback) {
+    function _move(px, duration, axis, callback) {
+      if (typeof callback != "function") {
+        callback = function(){};
+      }
+
+      if (duration == undefined) {
+        duration = 500;
+      }
+
+      // Move up or down
       if (axis == "top") {
         _object.animate({
           top: "+=" + px
-        }, 500, callback);
+        }, duration, callback);
+
+      // Move left or right
       } else if ( axis == "left") {
         _object.animate({
           left: "+=" + px
-        }, 500);
-      }
-      if (typeof callback != "function") {
-        callback = function(){};
+        }, duration);
       }
       return callback();
     }
 
+    /**
+     *
+     * @param {string} selector - jQuery-selector
+     * @returns {DemoModule|bool} - false if invalid selector
+     * @constructor
+     */
     function DemoModule(selector) {
       _object = $j(selector);
       if (_object.length == 1) {
@@ -37,12 +51,30 @@ define(["jquery"], function (jQuery) {
     }
 
     DemoModule.prototype = {
-      moveV: function(px) {
-        _move(px, "top");
+      /**
+       * Move object X Pixels down
+       * Negative Number for up
+       * @param {number} px
+       * @chaineable
+       */
+      moveV: function(px, duration) {
+        _move(px, duration, "top");
         return this;
       },
-      moveH: function(px) {
-        _move(px, "left");
+
+      /**
+       * Move object X Pixels right
+       * Negative Number for left
+       * @param {number} px
+       * @chainable
+       */
+      moveH: function(px, duration) {
+        _move(px, duration, "left");
+        return this;
+      },
+
+      wait: function(duration) {
+        _object.delay(duration);
         return this;
       }
     };
