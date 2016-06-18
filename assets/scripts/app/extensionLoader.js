@@ -10,16 +10,16 @@ define(["jquery"], function (jQuery) {
      * Extension_Path: Path to the Javascript-Extension
      */
     var extensionDependencies = {
-      ".Main": {
-        "extensions": [""],
+      "#moveable": {
+        "extensions": ["extensions/mainDemo"],
         "callback": function() {
-
+          console.log("Main loaded");
         }
       },
       ".notMain": {
         "extensions": [],
         "callback": function() {
-
+          console.log("notMain loaded");
         }
       }
     };

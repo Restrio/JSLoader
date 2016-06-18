@@ -7,7 +7,6 @@ requirejs.config({
     "appMain": "app/appMain",
     "extensionLoader": "app/extensionLoader",
     "extensions": "app/extensions",
-    "exLib": "extensions/lib",
     "jquery": "lib/jquery"
   },
   "map": {
