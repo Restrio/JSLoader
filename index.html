@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Jsloader by tstumpenhusen</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Jsloader</h1>
+      <h2 class="project-tagline">1.0.0</h2>
+      <a href="https://github.com/tstumpenhusen/jsloader" class="btn">View on GitHub</a>
+      <a href="https://github.com/tstumpenhusen/jsloader/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/tstumpenhusen/jsloader/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="welcome-to-jsloader" class="anchor" href="#welcome-to-jsloader" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to JSLoader</h1>
+
+<p>This is a js-architecture. It requires jQuery and RequireJS.
+Advantages:</p>
+
+<ul>
+<li>Abstract Code</li>
+<li>All dependencies in 1 file</li>
+<li>Easy usage</li>
+</ul>
+
+<h2>
+<a id="structure" class="anchor" href="#structure" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Structure</h2>
+
+<ul>
+<li>scripts/
+
+<ul>
+<li>app/
+
+<ul>
+<li>extensions/
+
+<ul>
+<li>lib/</li>
+</ul>
+</li>
+<li>appMain.js</li>
+<li>extensionLoader.js</li>
+</ul>
+</li>
+<li>lib/
+
+<ul>
+<li>jquery.js</li>
+<li>require.js</li>
+</ul>
+</li>
+<li>main.js</li>
+</ul>
+</li>
+</ul>
+
+<h3>
+<a id="scriptslib" class="anchor" href="#scriptslib" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>scripts/lib</h3>
+
+<p>Here are all third-party js-libraries.</p>
+
+<h3>
+<a id="scriptsappextensions" class="anchor" href="#scriptsappextensions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>scripts/app/extensions</h3>
+
+<p>You store your executables here.</p>
+
+<h3>
+<a id="scriptsappextensionslib" class="anchor" href="#scriptsappextensionslib" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>scripts/app/extensions/lib</h3>
+
+<p>You store your own libraries here.</p>
+
+<h3>
+<a id="mainjs" class="anchor" href="#mainjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>main.js</h3>
+
+<p>Here is the requireJS Configuration. It's already preconfigured for the basic functionality.
+Just change the baseUrl to your needs. That's it.</p>
+
+<h3>
+<a id="appmainjs" class="anchor" href="#appmainjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>appMain.js</h3>
+
+<p>Here goes the code you always need.</p>
+
+<h3>
+<a id="extensionloaderjs" class="anchor" href="#extensionloaderjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>extensionLoader.js</h3>
+
+<p>Here is where the "magic" comes from. Partially.  </p>
+
+<div class="highlight highlight-source-js"><pre>extensionDependecies <span class="pl-k">=</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>#main<span class="pl-pds">"</span></span><span class="pl-k">:</span> {  
+        <span class="pl-s"><span class="pl-pds">"</span>extensions<span class="pl-pds">"</span></span><span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">"</span>extensions/test<span class="pl-pds">"</span></span>],  
+        <span class="pl-s"><span class="pl-pds">"</span><span class="pl-en">callback</span><span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-k">function</span>(){}  
+    },
+    <span class="pl-k">...</span>
+}</pre></div>
+
+<p>In the extensionDependecies-Object, just add a markup-selector on which your js-extension depends.
+The Markup-Selector stores an object containing an extensions-array and a callback-function.
+Write all extensions which are directly related to the markup-selector into the extensions array.
+The Callback-function will be executed after loading the extension. You can write a small callback here, but try not to overload the callback. It's not even required.</p>
+
+<h3>
+<a id="extensionstestjs" class="anchor" href="#extensionstestjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>extensions/test.js</h3>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">define</span>([<span class="pl-s"><span class="pl-pds">"</span>jquery<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>extensions/lib/Module<span class="pl-pds">"</span></span>], <span class="pl-k">function</span>(<span class="pl-smi">jQuery</span>, <span class="pl-smi">Module</span>) {
+    <span class="pl-k">var</span> $j <span class="pl-k">=</span> <span class="pl-smi">jQuery</span>.<span class="pl-en">noConflict</span>();
+
+    <span class="pl-en">$j</span>(<span class="pl-c1">document</span>).<span class="pl-en">ready</span>(<span class="pl-k">function</span>() {
+        <span class="pl-k">var</span> Demo <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Module</span>();
+        <span class="pl-smi">Demo</span>.<span class="pl-en">doStuff</span>();
+    });
+});</pre></div>
+
+<p>This file stores the code that depends on "#main".
+In the first line, we define our dependencies for this file.
+In this case, it's jquery and extensions/lib/Module.
+Those files are loaded before executing the rest of this file. Thanks to requireJS.</p>
+
+<h3>
+<a id="extensionslibmodulejs" class="anchor" href="#extensionslibmodulejs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>extensions/lib/Module.js</h3>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">define</span>([], <span class="pl-k">function</span>() {
+    <span class="pl-k">return</span> (<span class="pl-k">function</span>(){
+        <span class="pl-k">var</span> _priv <span class="pl-k">=</span> <span class="pl-c1">null</span>;
+
+        <span class="pl-k">function</span> <span class="pl-en">Module</span>() {
+        }
+
+        <span class="pl-smi">Module</span>.<span class="pl-c1">prototype</span> <span class="pl-k">=</span> {
+        }
+
+        <span class="pl-k">return</span> Module;
+    })();
+});</pre></div>
+
+<p>This is how you would use the JS-Modulepattern together with this architecture.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/tstumpenhusen/jsloader">Jsloader</a> is maintained by <a href="https://github.com/tstumpenhusen">tstumpenhusen</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
