@@ -17,5 +17,4 @@ requirejs.config({
     "extensionLoader": ["jquery"]
   }
 });
-requirejs(["appMain"]);
-requirejs(["extensionLoader"]);
+requirejs(["appMain", "extensionLoader"]);

@@ -1,8 +1,6 @@
 "use strict";
-define(["jquery"], function (jQuery) {
-  var $j = jQuery.noConflict();
-
-  var DemoModule = (function() {
+define([], function () {
+  return (function() {
     var _object;
 
     /**
@@ -73,6 +71,11 @@ define(["jquery"], function (jQuery) {
         return this;
       },
 
+      /**
+       *
+       * @param {number} duration
+       * @chainable
+       */
       wait: function(duration) {
         _object.delay(duration);
         return this;
@@ -81,6 +84,4 @@ define(["jquery"], function (jQuery) {
 
     return DemoModule;
   })();
-
-  return DemoModule;
 });
