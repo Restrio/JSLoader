@@ -31,7 +31,7 @@ define(["jquery"], function (jQuery) {
 
     // Loads Extension if specified selector gets at least 1 element
     function loadExtensionIfElementExists(selector, extension, callback) {
-      if ($j(selector).length > 0) {
+      if ($j(selector).length >= selector.split(",").length) {
         requirejs(extension, callback);
       }
     }
