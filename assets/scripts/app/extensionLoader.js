@@ -67,7 +67,7 @@ define(["jquery"], function (jQuery) {
      */
     function loadExtensionIfElementExists(selector, extensions, callback, allowAbort) {
       callback = (typeof callback === "function" ? callback : undefined);
-      if ($j(selector).length > 0) {
+      if ($j(selector).length >= selector.split(",").length) {
         requirejs(extensions, callback);
         return true;
       }
