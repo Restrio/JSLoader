@@ -6,7 +6,7 @@ requirejs.config({
     "lib": "lib",
     "ExtensionLoader": "lib/extensionLoader",
     "appMain": "app/appMain",
-    "configuration": "app/configuration",
+    "config": "app/config",
     "extensions": "app/extensions",
     "exLib": "app/extensions/lib",
     "jquery": "lib/jquery"
@@ -18,4 +18,4 @@ requirejs.config({
     "appMain": ["jquery"]
   }
 });
-requirejs(["configuration", "appMain"]);
+requirejs(["config", "appMain"]);
