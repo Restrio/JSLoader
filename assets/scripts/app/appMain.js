@@ -1,6 +1,6 @@
 "use strict";
-define(["jquery"], function (jQuery) {
-	var $j = jQuery.noConflict();
+define(["jquery"], function(jQuery) {
+  var $j = jQuery.noConflict();
 
   $j(document).ready(function() {
 
