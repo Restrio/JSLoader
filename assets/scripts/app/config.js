@@ -8,8 +8,11 @@ define(["ExtensionLoader"], function(ExtensionLoader) {
       };
 
   loader.addConfig({
+    // External Configured Object
     "#moveable": moveableConf,
-    "#myShit": [{
+    
+    // Multiple Callbacks, Extensions optional if code is very small
+    "#otherElement": [{
       extensions: [],
       callback: function() {
         console.log("notMain loaded");
@@ -21,8 +24,14 @@ define(["ExtensionLoader"], function(ExtensionLoader) {
       }
     }]
   }).addConfig({
-    "#myShit": {
-      extensions: []
+    
+    // Extends Config from above, callback optional
+    "#otherElement": {
+      extensions: ["extensions/mainDemo"]
     }
+    
+    // Load your Configuration whenever you want
   }).load();
+  
+  // Bonus: The Extensionloader is instanciable, so you can load another codeblock whenever you need it in you app
 });
