@@ -67,8 +67,10 @@ define([], function() {
      * @private
      */
     function _load(selector, configArray) {
+      var result = false;
       for (var index in configArray) {
-        if (!_loadIfElementExists(selector, configArray[index])) {
+        result = _loadIfElementExists(selector, configArray[index], result)
+        if (!result) {
           break;
         }
       }
@@ -78,11 +80,12 @@ define([], function() {
      * Uses RequireJs to load Extensions if element exists
      * @param {string} element
      * @param {object} config
+     * @param {boolean} elementAlreadyFound
      * @returns {boolean} true = success | false = element not found, load aborted
      * @private
      */
-    function _loadIfElementExists(element, config) {
-      if (document.querySelectorAll(element).length >= element.split(",").length) {
+    function _loadIfElementExists(element, config, elementAlreadyFound) {
+      if (elementAlreadyFound === true || document.querySelectorAll(element).length >= element.split(",").length) {
         requirejs(config.extensions, config.callback);
         return true;
       }
