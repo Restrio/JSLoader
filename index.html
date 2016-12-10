@@ -22,13 +22,15 @@
       <h1>
 <a id="welcome-to-jsloader" class="anchor" href="#welcome-to-jsloader" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to JSLoader</h1>
 
-<p>This is a js-architecture. It requires jQuery and RequireJS.
-Advantages:</p>
+<p>The JSLoader is basicly a little js-architecture to structure your application a bit better, have all your dependencies clear and making multifile-usage in JavaScript a lesser pain in the ass.</p>
+
+<p>Advantages:</p>
 
 <ul>
 <li>Abstract Code</li>
 <li>All dependencies in 1 file</li>
 <li>Easy usage</li>
+<li>No jQuery required</li>
 </ul>
 
 <h2>
@@ -48,13 +50,13 @@ Advantages:</p>
 </ul>
 </li>
 <li>appMain.js</li>
-<li>extensionLoader.js</li>
+<li>config.js</li>
 </ul>
 </li>
 <li>lib/
 
 <ul>
-<li>jquery.js</li>
+<li>extensionLoader.js</li>
 <li>require.js</li>
 </ul>
 </li>
@@ -81,31 +83,80 @@ Advantages:</p>
 <h3>
 <a id="mainjs" class="anchor" href="#mainjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>main.js</h3>
 
-<p>Here is the requireJS Configuration. It's already preconfigured for the basic functionality.
-Just change the baseUrl to your needs. That's it.</p>
+<p>Here is the requireJS Configuration. It's already preconfigured for the basic functionality.<br>
+Just fit the baseUrl to your needs. That's it.</p>
 
 <h3>
 <a id="appmainjs" class="anchor" href="#appmainjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>appMain.js</h3>
 
-<p>Here goes the code you always need.</p>
+<p>This file is the first file loaded after the main.js.
+Here goes the code you always need.</p>
 
 <h3>
-<a id="extensionloaderjs" class="anchor" href="#extensionloaderjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>extensionLoader.js</h3>
+<a id="configjs" class="anchor" href="#configjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>config.js</h3>
 
-<p>Here is where the "magic" comes from. Partially.  </p>
+<p>You configure your extensions here.</p>
 
-<div class="highlight highlight-source-js"><pre>extensionDependecies <span class="pl-k">=</span> {
-    <span class="pl-s"><span class="pl-pds">"</span>#main<span class="pl-pds">"</span></span><span class="pl-k">:</span> {  
-        <span class="pl-s"><span class="pl-pds">"</span>extensions<span class="pl-pds">"</span></span><span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">"</span>extensions/test<span class="pl-pds">"</span></span>],  
-        <span class="pl-s"><span class="pl-pds">"</span><span class="pl-en">callback</span><span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-k">function</span>(){}  
-    },
-    <span class="pl-k">...</span>
-}</pre></div>
+<div class="highlight highlight-source-js"><pre><span class="pl-en">define</span>([<span class="pl-s"><span class="pl-pds">"</span>ExtensionLoader<span class="pl-pds">"</span></span>], <span class="pl-k">function</span>() {
+    <span class="pl-k">var</span> loader <span class="pl-k">=</span> <span class="pl-en">ExtensionLoader</span>();
 
-<p>In the extensionDependecies-Object, just add a markup-selector on which your js-extension depends.
-The Markup-Selector stores an object containing an extensions-array and a callback-function.
-Write all extensions which are directly related to the markup-selector into the extensions array.
-The Callback-function will be executed after loading the extension. You can write a small callback here, but try not to overload the callback. It's not even required.</p>
+    <span class="pl-smi">loader</span>.<span class="pl-en">addConfig</span>({
+        <span class="pl-s"><span class="pl-pds">"</span>#main<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+            extensions<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">"</span>extensions/test<span class="pl-pds">"</span></span>],
+            <span class="pl-en">callback</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">test</span>) {
+                <span class="pl-c">// Short Code to execute when Extensions are loaded</span>
+            }
+        }
+    });
+    <span class="pl-smi">loader</span>.<span class="pl-c1">load</span>();
+});</pre></div>
+
+<p>In this case, the scriptfile <code>assets/scripts/app/extensions/test.js</code> will be loaded, if an element with the id "main" exists.</p>
+
+<p>Here we have some cool additional features.
+You can not only assign an object like above to one css-selector. Assigning an array of objects is also totally fine.
+Using an array of objects is extremly useful. The ExtensionLoader will only check the selector once and than load all extensions with the configured callbacks (which are optional by the way).</p>
+
+<p>You could theoretically use every kind of selector, but complex ones will lead to poor performance when loading a lot of extensions.</p>
+
+<p>On top of that, the ExtensionLoader supports instances. Means, you can load even more extensions from your already loaded extensions. The ExtensionLoader will not re-iterate over the config added in the <code>config.js</code>-file.</p>
+
+<h4>
+<a id="different-kinds-of-configurations" class="anchor" href="#different-kinds-of-configurations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Different kinds of Configurations</h4>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">loader</span>.<span class="pl-en">addConfig</span>({
+    <span class="pl-s"><span class="pl-pds">"</span>#main<span class="pl-pds">"</span></span><span class="pl-k">:</span> [{
+        extensions<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">"</span>extensions/test<span class="pl-pds">"</span></span>],
+        <span class="pl-en">callback</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">test</span>) {
+            <span class="pl-c">// Short Code to execute when Extensions are loaded</span>
+        }
+    }, {
+        extensions<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">"</span>extensions/otherExtension<span class="pl-pds">"</span></span>],
+        <span class="pl-en">callback</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">otherExtension</span>) {
+            <span class="pl-c">// Short Code to execute when Extensions are loaded</span>
+        }
+    }]
+});</pre></div>
+
+<p>You think, that's unreadable?<br>
+I've got another solution, which does exactly the same.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">loader</span>.<span class="pl-en">addConfig</span>({
+    <span class="pl-s"><span class="pl-pds">"</span>#main<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+        extensions<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">"</span>extensions/test<span class="pl-pds">"</span></span>],
+        <span class="pl-en">callback</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">test</span>) {
+            <span class="pl-c">// Short Code to execute when Extensions are loaded</span>
+        }
+    }
+});
+<span class="pl-smi">loader</span>.<span class="pl-en">addConfig</span>({
+    <span class="pl-s"><span class="pl-pds">"</span>#main<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+        extensions<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">"</span>extensions/otherExtension<span class="pl-pds">"</span></span>],
+        <span class="pl-en">callback</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">otherExtension</span>) {
+            <span class="pl-c">// Short Code to execute when Extensions are loaded</span>
+        }
+    }
+});</pre></div>
 
 <h3>
 <a id="extensionstestjs" class="anchor" href="#extensionstestjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>extensions/test.js</h3>
@@ -122,26 +173,52 @@ The Callback-function will be executed after loading the extension. You can writ
 <p>This file stores the code that depends on "#main".
 In the first line, we define our dependencies for this file.
 In this case, it's jquery and extensions/lib/Module.
-Those files are loaded before executing the rest of this file. Thanks to requireJS.</p>
+Thanks to RequireJS, Those files are loaded before executing the rest of this file.</p>
 
 <h3>
-<a id="extensionslibmodulejs" class="anchor" href="#extensionslibmodulejs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>extensions/lib/Module.js</h3>
+<a id="loading-extensions-late" class="anchor" href="#loading-extensions-late" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Loading Extensions late</h3>
 
-<div class="highlight highlight-source-js"><pre><span class="pl-en">define</span>([], <span class="pl-k">function</span>() {
-    <span class="pl-k">return</span> (<span class="pl-k">function</span>(){
-        <span class="pl-k">var</span> _priv <span class="pl-k">=</span> <span class="pl-c1">null</span>;
+<p>So, we have our application set up and properly running.
+Someone now wants us, to load lots of code exactly 2 minutes after the page loaded.
+We can do that, too.</p>
 
-        <span class="pl-k">function</span> <span class="pl-en">Module</span>() {
-        }
+<p>We are building a new extension and import our ExtensionLoader.</p>
 
-        <span class="pl-smi">Module</span>.<span class="pl-c1">prototype</span> <span class="pl-k">=</span> {
-        }
-
-        <span class="pl-k">return</span> Module;
-    })();
+<div class="highlight highlight-source-js"><pre><span class="pl-en">define</span>([<span class="pl-s"><span class="pl-pds">"</span>ExtensionLoader<span class="pl-pds">"</span></span>], <span class="pl-k">function</span>(<span class="pl-smi">ExtensionLoader</span>) {
+    <span class="pl-k">var</span> loader <span class="pl-k">=</span> <span class="pl-en">ExtensionLoader</span>();
 });</pre></div>
 
-<p>This is how you would use the JS-Modulepattern together with this architecture.</p>
+<p>In here, we configure the extensions, which should be loaded.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">define</span>([<span class="pl-s"><span class="pl-pds">"</span>ExtensionLoader<span class="pl-pds">"</span></span>], <span class="pl-k">function</span>(<span class="pl-smi">ExtensionLoader</span>) {
+    <span class="pl-k">var</span> loader <span class="pl-k">=</span> <span class="pl-en">ExtensionLoader</span>();
+
+    <span class="pl-smi">loader</span>.<span class="pl-en">addConfig</span>({
+        <span class="pl-s"><span class="pl-pds">"</span>#demo<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+            extensions<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">"</span>extensions/anotherExtension<span class="pl-pds">"</span></span>]
+        }
+    });
+});</pre></div>
+
+<p>As you may notice, I didn't add the <code>load</code>-call.
+We will fire the load 2 minutes after loading the page.
+We just add a setTimeout like this.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">define</span>([<span class="pl-s"><span class="pl-pds">"</span>ExtensionLoader<span class="pl-pds">"</span></span>], <span class="pl-k">function</span>(<span class="pl-smi">ExtensionLoader</span>) {
+    <span class="pl-k">var</span> loader <span class="pl-k">=</span> <span class="pl-en">ExtensionLoader</span>();
+
+    <span class="pl-smi">loader</span>.<span class="pl-en">addConfig</span>({
+        <span class="pl-s"><span class="pl-pds">"</span>#demo<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+            extensions<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">"</span>extensions/anotherExtension<span class="pl-pds">"</span></span>]
+        }
+    });
+
+    <span class="pl-c1">setTimeout</span>(<span class="pl-k">function</span>() {
+        <span class="pl-smi">loader</span>.<span class="pl-c1">load</span>();
+    }, <span class="pl-c1">60000</span>);
+});</pre></div>
+
+<p>2 minutes after this file is executed, the additional extensions will be loading.</p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/tstumpenhusen/jsloader">Jsloader</a> is maintained by <a href="https://github.com/tstumpenhusen">tstumpenhusen</a>.</span>
