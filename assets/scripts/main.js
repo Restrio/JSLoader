@@ -10,12 +10,6 @@ requirejs.config({
     "extensions": "app/extensions",
     "exLib": "app/extensions/lib",
     "jquery": "lib/jquery"
-  },
-  "map": {
-    "*": { "jquery": "jquery" }
-  },
-  "shim": {
-    "appMain": ["jquery"]
   }
 });
-requirejs(["config", "appMain"]);
+requirejs(["appMain", "config"]);

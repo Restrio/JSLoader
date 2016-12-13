@@ -1,5 +1,6 @@
 define(["ExtensionLoader"], function(ExtensionLoader) {
-  var loader = ExtensionLoader(),
+  console.log(ExtensionLoader);
+  var loader = new ExtensionLoader(),
       moveableConf = {
         extensions: ["extensions/mainDemo"],
         callback: function (mainDemo) {
