@@ -1,5 +1,15 @@
 define(function() {
   var _config = {};
+  
+  /**
+   * Get full type from variable
+   * @param {*} variable
+   * @return {string}
+   @private
+   */
+  function _getType(variable) {
+    return Object.prototype.toString.call(variable);
+  }
 
   /**
    * Splits Selectors from Configurations
@@ -19,7 +29,7 @@ define(function() {
    * @private
    */
   function _parseConfigNode(selector, config) {
-    var configType = Object.prototype.toString.call(config);
+    var configType = _getType(config);
 
     if (configType === "[object Array]") {
       for (var index in config) {
@@ -52,22 +62,26 @@ define(function() {
    * Calls load for all Selectors
    * @private
    */
-  function _loadAll() {
+  function _loadAll(requireInstance) {
+    if (_getType(requireInstance) !== "[object Object]") {
+      requireInstance = requireBase;
+    }
     for (var index in _config) {
-      _load(index, _config[index]);
+      _load(requireInstance, index, _config[index]);
     }
   }
 
   /**
    * Call loading of extensions for each configuration in selector
+   * @param {object} requireInstance - Instance of requireJS
    * @param {string} selector
    * @param {...object} configArray
    * @private
    */
-  function _load(selector, configArray) {
+  function _load(requireInstance, selector, configArray) {
     var result = false;
     for (var index in configArray) {
-      result = _loadIfElementExists(selector, configArray[index], result);
+      result = _loadIfElementExists(requireInstance, selector, configArray[index], result);
       if (!result) {
         break;
       }
@@ -76,15 +90,16 @@ define(function() {
 
   /**
    * Uses RequireJs to load Extensions if element exists
+   * @paral {object} requireInstance - Instance of requireJS
    * @param {string} element
    * @param {object} config
-   * @param {boolean} elementAlreadyFound
+   * @param {boolean} [elementAlreadyFound]
    * @returns {boolean} true = success | false = element not found, load aborted
    * @private
    */
-  function _loadIfElementExists(element, config, elementAlreadyFound) {
-    if (elementAlreadyFound === true || document.querySelectorAll(element).length >= element.split(",").length) {
-      requirejs(config.extensions, config.callback);
+  function _loadIfElementExists(requireInstance, element, config, elementAlreadyFound) {
+    if (!!elementAlreadyFound === true || document.querySelectorAll(element).length >= element.split(",").length) {
+      requireInstance(config.extensions, config.callback);
       return true;
     }
     return false;
@@ -108,13 +123,16 @@ define(function() {
 
     /**
      * Loads all Extensions when Dom is loaded
+     * @param {object} [requireInstance] - Instance of requireJS
      * @see _loadAll
      */
-    load: function() {
+    load: function(requireInstance) {
       if (document.readyState !== "complete") {
-        window.addEventListener("load", _loadAll);
+        window.addEventListener("load", function() {
+          _loadAll(requireInstance);
+        });
       } else {
-        _loadAll();
+        _loadAll(requireInstance);
       }
     }
   };

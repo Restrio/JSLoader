@@ -1,5 +1,6 @@
 "use strict";
-requirejs.config({
+var requireBase = requirejs.config({
+  "context": (new Date()).getTime(),
   "baseUrl": "assets/scripts",
   "paths": {
     "app": "app",
@@ -12,4 +13,4 @@ requirejs.config({
     "jquery": "lib/jquery"
   }
 });
-requirejs(["appMain", "config"]);
+requireBase(["appMain", "config"]);
