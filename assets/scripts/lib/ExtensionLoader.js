@@ -5,7 +5,7 @@ define(function() {
    * Get full type from variable
    * @param {*} variable
    * @return {string}
-   @private
+   * @private
    */
   function _getType(variable) {
     return Object.prototype.toString.call(variable);
