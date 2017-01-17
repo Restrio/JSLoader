@@ -73,7 +73,7 @@ define(function() {
 
   /**
    * Call loading of extensions for each configuration in selector
-   * @param {object} requireInstance - Instance of requireJS
+   * @param {function} requireInstance - Instance of requireJS
    * @param {string} selector
    * @param {...object} configArray
    * @private
@@ -90,7 +90,7 @@ define(function() {
 
   /**
    * Uses RequireJs to load Extensions if element exists
-   * @paral {object} requireInstance - Instance of requireJS
+   * @param {function} requireInstance - Instance of requireJS
    * @param {string} element
    * @param {object} config
    * @param {boolean} [elementAlreadyFound]
