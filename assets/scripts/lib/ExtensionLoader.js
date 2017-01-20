@@ -1,3 +1,4 @@
+"use strict";
 define(function() {
   var _config = {};
   
@@ -38,6 +39,7 @@ define(function() {
     } else if (configType === "[object Object]" && config.hasOwnProperty("extensions")) {
       // Validate Callback
       config.callback = (typeof config.callback === "function" ? config.callback : undefined);
+      config.errback = (typeof config.callback === "function" ? config.errback : undefined);
 
       _addConfigToSelector(selector, config);
     } else {
@@ -91,18 +93,89 @@ define(function() {
   /**
    * Uses RequireJs to load Extensions if element exists
    * @param {function} requireInstance - Instance of requireJS
-   * @param {string} element
+   * @param {string} selector
    * @param {object} config
    * @param {boolean} [elementAlreadyFound]
    * @returns {boolean} true = success | false = element not found, load aborted
    * @private
    */
-  function _loadIfElementExists(requireInstance, element, config, elementAlreadyFound) {
-    if (!!elementAlreadyFound === true || document.querySelectorAll(element).length >= element.split(",").length) {
-      requireInstance(config.extensions, config.callback);
+  function _loadIfElementExists(requireInstance, selector, config, elementAlreadyFound) {
+    if (!!elementAlreadyFound === true || _checkElementExistence(selector)) {
+      requireInstance(config.extensions, config.callback, config.errback);
       return true;
     }
     return false;
+  }
+
+  /**
+   * Starts Parsing for ||, && and !
+   * @param {string} selector
+   * @returns {boolean}
+   * @private
+   */
+  function _checkElementExistence(selector) {
+    return _parseOr(selector);
+  }
+
+  /**
+   * Parses OR in selector
+   * @param {string} selector
+   * @returns {boolean}
+   * @private
+   */
+  function _parseOr(selector) {
+    // Or aborts, when first true-value occurs
+    var result = false,
+      selectors = selector.split("||");
+
+    for (var i in selectors) {
+      result = _parseAnd(selectors[i]);
+      if (result) {
+        break;
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Parses AND in selector
+   * @param {string} selector
+   * @returns {boolean}
+   * @private
+   */
+  function _parseAnd(selector) {
+    // And aborts, when first false-value occurs
+    var result = true,
+      selectors = selector.split("&&");
+
+    for (var i in selectors) {
+      result = _parseNot(selectors[i]);
+      if (!result) {
+        break;
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Checks element existence or non-existence
+   * @param {string} selector - valid CSS-Selector with or without ! before
+   * @returns {boolean}
+   * @private
+   */
+  function _parseNot(selector) {
+    var negate = selector.indexOf("!") > -1;
+
+    if (negate) {
+      selector = selector.split("!").pop();
+    }
+
+    var element = !document.querySelector(selector);
+
+    if (negate && element) {
+      return element;
+    }
+    return !element;
   }
 
   var ExtensionLoader = function() {};

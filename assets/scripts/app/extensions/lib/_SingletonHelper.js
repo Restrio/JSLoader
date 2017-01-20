@@ -1,5 +1,11 @@
 define(function() {
   return {
+    /**
+     * Creates a new Class Instance
+     * @param obj
+     * @param arg
+     * @returns {*}
+     */
     createInstance: function(obj, arg) {
 
       // Create array out of arguments
