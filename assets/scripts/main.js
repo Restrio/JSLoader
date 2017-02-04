@@ -5,9 +5,7 @@ var requireBase = requirejs.config({
   "paths": {
     "app": "app",
     "lib": "lib",
-    "EventHelper": "lib/EventHelper",
-    "ExtensionLoader": "lib/ExtensionLoader",
-    "InstanceCreator": "lib/InstanceCreator",
+    "JS": "lib/JS",
     "appMain": "app/appMain",
     "config": "app/config",
     "extensions": "app/extensions",

@@ -1,4 +1,4 @@
-define(["InstanceCreator"], function(InstanceCreator) {
+define(["JS"], function(JS) {
   return function() {
     // Private Scope
 
@@ -31,6 +31,6 @@ define(["InstanceCreator"], function(InstanceCreator) {
       }
     };
 
-    return InstanceCreator.createInstance(_Module, arguments);
+    return JS.getCreater().createInstance(_Module, arguments);
   }
 });

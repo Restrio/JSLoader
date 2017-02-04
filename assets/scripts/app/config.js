@@ -1,5 +1,5 @@
-define(["ExtensionLoader"], function(ExtensionLoader) {
-  var loader = new ExtensionLoader();
+define(["JS"], function(JS) {
+  var loader = JS.getLoader();
 
   loader.addConfig({
     // External Configured Object

@@ -1,8 +1,8 @@
-define(["InstanceCreator", "jquery"], function (InstanceCreator, jQuery) {
+define(["JS", "lib/jquery"], function (JS) {
+  var $j = jQuery.noConflict();
   "use strict";
   return function() {
-    var $j = jQuery.noConflict(),
-      _object,
+    var _object,
       DemoModule;
 
     /**
@@ -83,6 +83,6 @@ define(["InstanceCreator", "jquery"], function (InstanceCreator, jQuery) {
       }
     };
 
-    return InstanceCreator.createInstance(DemoModule, arguments);
+    return JS.getCreater().createInstance(DemoModule, arguments);
   };
 });

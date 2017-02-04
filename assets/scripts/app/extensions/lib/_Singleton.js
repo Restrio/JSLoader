@@ -1,4 +1,4 @@
-define(["InstanceCreator"], function(InstanceCreator) {
+define(["JS"], function(JS) {
   // Private Scope
   var _Singleton,
       _self = null,
@@ -36,7 +36,7 @@ define(["InstanceCreator"], function(InstanceCreator) {
     // Static Scope
     getInstance: function() {
       if (_self === null) {
-        _self = InstanceCreator.createInstance(_Singleton, arguments);
+        _self = JS.getCreater().createInstance(_Singleton, arguments);
       }
       return _self;
     }
