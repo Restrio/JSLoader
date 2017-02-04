@@ -5,7 +5,7 @@ define(function() {
       windowLoad: function(callback) {
         if (document.readyState !== "complete") {
           window.addEventListener("load", function() {
-            callback()
+            callback();
           });
         } else {
           callback();
@@ -23,7 +23,7 @@ define(function() {
       }
     },
     Loader: function() {
-      return function() {
+      return new (function() {
         var _config = {};
 
         /**
@@ -124,7 +124,7 @@ define(function() {
          * @private
          */
         function _loadIfElementExists(requireInstance, selector, config, elementAlreadyFound) {
-          if (!!elementAlreadyFound === true || _checkElementExistence(selector)) {
+          if (!!elementAlreadyFound || _checkElementExistence(selector)) {
             requireInstance(config.extensions, config.callback, config.errback);
             return true;
           }
@@ -231,13 +231,13 @@ define(function() {
         };
 
         return new Loader();
-      }
+      })();
     }
   };
 
   return {
     getLoader: function() {
-      return new (_JS.Loader());
+      return _JS.Loader();
     },
     getEventer: function() {
       return _JS.Eventer;
