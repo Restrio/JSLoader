@@ -1,4 +1,4 @@
-define(["exLib/_SingletonHelper"], function(SingletonHelper) {
+define(["JS"], function(JS) {
   // Private Scope
   var _Singleton,
       _self = null,
@@ -36,7 +36,7 @@ define(["exLib/_SingletonHelper"], function(SingletonHelper) {
     // Static Scope
     getInstance: function() {
       if (_self === null) {
-        _self = SingletonHelper.createInstance(_Singleton, arguments);
+        _self = JS.getCreater().createInstance(_Singleton, arguments);
       }
       return _self;
     }

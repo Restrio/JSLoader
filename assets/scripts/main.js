@@ -5,12 +5,11 @@ var requireBase = requirejs.config({
   "paths": {
     "app": "app",
     "lib": "lib",
-    "ExtensionLoader": "lib/extensionLoader",
+    "JS": "lib/JS",
     "appMain": "app/appMain",
     "config": "app/config",
     "extensions": "app/extensions",
-    "exLib": "app/extensions/lib",
-    "jquery": "lib/jquery"
+    "exLib": "app/extensions/lib"
   }
 });
 requireBase(["appMain", "config"]);
