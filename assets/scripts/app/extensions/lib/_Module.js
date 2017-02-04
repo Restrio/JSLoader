@@ -1,34 +1,36 @@
-define(function() {
-  // Private Scope
-  
-  var _Module,
+define(["JS"], function(JS) {
+  return function() {
+    // Private Scope
+
+    var _Module,
       _privVar = null;
-  
-  function _setPrivVar(val) {
-    _privVar = val;
-  }
-  
-  // Our Constructor
-  _Module = function() {};
-  
-  _Module.prototype = {
-    
-    // Public Scope
-    publicVar: null,
-    
-    setPrivVar: function(val) {
-      _setPrivVar(val);
-    },
-    
-    setPublicVar: function(val) {
-      this.publicVar = val;
-    },
-    
-    setBothVars: function(val) {
-      _setPrivVar(val);
-      this.setPublicVar(val);
+
+    function _setPrivVar(val) {
+      _privVar = val;
     }
-  };
-  
-  return _Module;
+
+    // Our Constructor
+    _Module = function() {};
+
+    _Module.prototype = {
+
+      // Public Scope
+      publicVar: null,
+
+      setPrivVar: function(val) {
+        _setPrivVar(val);
+      },
+
+      setPublicVar: function(val) {
+        this.publicVar = val;
+      },
+
+      setBothVars: function(val) {
+        _setPrivVar(val);
+        this.setPublicVar(val);
+      }
+    };
+
+    return JS.getCreater().createInstance(_Module, arguments);
+  }
 });
