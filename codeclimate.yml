@@ -1,0 +1,11 @@
+languages:
+  JavaScript: true
+exclude_paths:
+- "assets/scripts/app/extensions/lib/_Module.js"
+- "assets/scripts/app/extensions/lib/_Singleton.js"
+engines:
+  eslint:
+    enabled: true
+    checks:
+      guard-for-in:
+        enabled: false

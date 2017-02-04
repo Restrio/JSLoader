@@ -4,11 +4,9 @@ define(function() {
     Eventer: {
       windowLoad: function(callback) {
         if (document.readyState !== "complete") {
-          window.addEventListener("load", function() {
-            callback();
-          });
+          window.addEventListener("load", callback);
         } else {
-          callback();
+          return callback();
         }
       }
     },
