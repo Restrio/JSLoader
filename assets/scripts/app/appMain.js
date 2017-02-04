@@ -1,13 +1,11 @@
 "use strict";
-define(["jquery"], function(jQuery) {
-  var $j = jQuery.noConflict();
+define(["EventHelper"], function(EventHelper) {
 
-  $j(document).ready(function() {
+  EventHelper.windowLoad(function() {
+    var contentType = document.querySelector("meta[name='type']").attr("type"),
+        headline = document.getElementById("#headline");
 
-    // __ DEMO __
-    var contentType = $j("meta[name='type']").attr("type");
-    $j("#headline").addClass(contentType).html(contentType);
-    // __ DEMO __
-
+    headline.classList.add(contentType);
+    headline.innerHTML = contentType;
   });
 });

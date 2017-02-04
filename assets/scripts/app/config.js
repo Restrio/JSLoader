@@ -1,16 +1,14 @@
 define(["ExtensionLoader"], function(ExtensionLoader) {
-  console.log(ExtensionLoader);
-  var loader = new ExtensionLoader(),
-      moveableConf = {
-        extensions: ["extensions/mainDemo"],
-        callback: function (mainDemo) {
-          console.log(arguments)
-        }
-      };
+  var loader = new ExtensionLoader();
 
   loader.addConfig({
     // External Configured Object
-    "#moveable": moveableConf,
+    "#moveable": {
+      extensions: ["extensions/mainDemo"],
+      callback: function (mainDemo) {
+        console.log(arguments)
+      }
+    },
     
     // Multiple Callbacks, Extensions optional if code is very small
     "#otherElement": [{
@@ -28,7 +26,10 @@ define(["ExtensionLoader"], function(ExtensionLoader) {
     
     // Extends Config from above, callback optional
     "#otherElement": {
-      extensions: ["extensions/mainDemo"]
+      extensions: [],
+      callback: function() {
+        console.log("This extends the given config");
+      }
     }
     
     // Load your Configuration whenever you want
