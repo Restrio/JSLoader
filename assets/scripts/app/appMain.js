@@ -1,11 +1,1 @@
-"use strict";
-define(["JS"], function(JS) {
-
-  JS.getEventer().windowLoad(function() {
-    var contentType = document.querySelector("meta[name='type']").getAttribute("type"),
-        headline = document.getElementById("headline");
-
-    headline.classList.add(contentType);
-    headline.innerHTML = contentType;
-  });
-});
+"use strict";define(["JS"],function(e){e.getEventer().windowLoad(function(){var e=document.querySelector("meta[name='type']").getAttribute("type"),t=document.getElementById("headline");t.classList.add(e),t.innerHTML=e})});
