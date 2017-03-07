@@ -35,7 +35,8 @@ define(function() {
       return new (function() {
         var _config = {},
             _cssLoaded = [],
-            _head = undefined;
+            _head = undefined,
+            _firstLoad = true;
 
         /**
          * Splits Selectors from Configurations
@@ -63,8 +64,14 @@ define(function() {
             }
           } else if (configType === "[object Object]" && config.hasOwnProperty("extensions")) {
             // Validate Callback
-            config.callback = (typeof config.callback === "function" ? config.callback : undefined);
-            config.errback = (typeof config.callback === "function" ? config.errback : undefined);
+            var functionDefaults = {
+              callback: undefined,
+              errback: undefined
+            };
+
+            for (var i in functionDefaults) {
+              config[i] = typeof config[i] === "function" ? config[i] : functionDefaults[i];
+            }
 
             config.styles = _getParsedCssConfigArray(config.styles);
 
@@ -81,25 +88,26 @@ define(function() {
          * @private
          */
         function _getParsedCssConfigArray(styleConfigs) {
-          if (styleConfigs == undefined) {
-            return [];
-          }
-          var type = _JS.getType(styleConfigs);
+          var result = [];
+          switch (_JS.getType(styleConfigs)) {
+            case "[object String]":
+              result = [{href: type}];
+              break;
 
-          if (type === "[object String]") {
-            return [{href: type}];
-          } else if (type === "[object Array]") {
-            var configArray = [];
-            for (var i in styleConfigs) {
-              var styleConfig = _getParsedCssConfig(styleConfigs[i]);
-              styleConfig = _setCssDefaultValues(styleConfig);
+            case "[object Array]":
+              var configArray = [];
+              for (var i in styleConfigs) {
+                var styleConfig = _getParsedCssConfig(styleConfigs[i]);
+                styleConfig = _setCssDefaultValues(styleConfig);
 
-              if (styleConfig !== undefined) {
-                configArray.push(styleConfig);
+                if (styleConfig !== undefined) {
+                  configArray.push(styleConfig);
+                }
               }
-            }
-            return configArray;
+              result = configArray;
+              break;
           }
+          return result;
         }
 
         /**
@@ -120,11 +128,11 @@ define(function() {
 
           // If href is a string
           if (typeof styleConfig.href === "string") {
+
             // Get Position of Fileending
             var fileEndingIndex = styleConfig.href.indexOf(".css");
 
             // If Fileending exists, everythings fine
-
             if (fileEndingIndex === styleConfig.href.length - 4) {
               return styleConfig;
               // If Fileending missing, add .css
@@ -143,9 +151,16 @@ define(function() {
           if (typeof config !== "object" || config.href === undefined) {
             return undefined;
           }
-          config.rel = config.rel ? config.rel : "stylesheet";
-          config.media = config.media ? config.media : "all";
-          config.type = config.type ? config.type : "text/css";
+
+          var cssDefaults = {
+            rel: "stylesheet",
+            media: "all",
+            type: "text/css"
+          };
+
+          for (var attr in cssDefaults) {
+            config[attr] = config[attr] ? config[attr] : cssDefaults[attr];
+          }
           return config;
         }
 
@@ -193,6 +208,20 @@ define(function() {
         }
 
         /**
+         * Saves hrefs of loaded css to prevent loading these file again
+         * Only executed once
+         * @private
+         */
+        function _findLoadedCss() {
+          if (_firstLoad) {
+            _firstLoad = false;
+            for (var i = 0; i < document.styleSheets.length; i++) {
+              _cssLoaded.push(document.styleSheets[i].ownerNode.getAttribute("href"));
+            }
+          }
+        }
+
+        /**
          * Uses RequireJs to load Extensions if element exists
          * @param {function} requireInstance - Instance of requireJS
          * @param {string} selector
@@ -210,21 +239,32 @@ define(function() {
           return false;
         }
 
+        /**
+         * Creates new Link-Elements and adds them to head, if css file hasn't been loaded yet
+         * @param cssConfigs[]
+         * @private
+         */
         function _loadCSS(cssConfigs) {
           if (cssConfigs.length > 0 && _head === undefined) {
             _head = document.querySelector("head")
           }
+          // for each configuration
           for (var i in cssConfigs) {
             var cssConfig = cssConfigs[i];
 
-            if (_cssLoaded.indexOf(cssConfig.src) === -1) {
+            // Only Create Element, if css not already loaded
+            if (_cssLoaded.indexOf(cssConfig.href) === -1) {
               var link = document.createElement("link");
+
+              // Apply attributes to link element
               for (var attribute in cssConfig) {
                 var value = cssConfig[attribute];
                 link.setAttribute(attribute, value);
               }
+
+              // Add link element and
               _head.append(link);
-              _cssLoaded.push(cssConfig.src);
+              _cssLoaded.push(cssConfig.href);
             }
           }
         }
@@ -323,6 +363,7 @@ define(function() {
            */
           load: function(requireInstance) {
             _JS.Eventer.windowLoad(function() {
+              _findLoadedCss();
               _loadAll(requireInstance);
             });
           }
