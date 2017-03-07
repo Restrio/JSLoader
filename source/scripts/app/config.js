@@ -1,10 +1,18 @@
 define(["JS"], function(JS) {
   var loader = JS.getLoader();
 
+  function css(file) {
+    return "assets/css/" + file + ".css";
+  }
+
   loader.addConfig({
     // External Configured Object
     "#moveable": {
       extensions: ["extensions/mainDemo"],
+      styles: [css("main"), {
+        href: css("moreStyles"),
+        media: "all"
+      }],
       callback: function (mainDemo) {
         console.log(arguments)
       }

@@ -1,5 +1,6 @@
 "use strict";
-var requireBase = requirejs.config({
+var requireBase;
+requireBase = requirejs.config({
   "context": (new Date()).getTime(),
   "baseUrl": "assets/scripts",
   "paths": {
@@ -11,5 +12,4 @@ var requireBase = requirejs.config({
     "extensions": "app/extensions",
     "exLib": "app/extensions/lib"
   }
-});
-requireBase(["appMain", "config"]);
+})(["appMain", "config"]);

@@ -33,7 +33,9 @@ define(function() {
     },
     Loader: function() {
       return new (function() {
-        var _config = {};
+        var _config = {},
+            _cssLoaded = [],
+            _head = undefined;
 
         /**
          * Splits Selectors from Configurations
@@ -64,10 +66,87 @@ define(function() {
             config.callback = (typeof config.callback === "function" ? config.callback : undefined);
             config.errback = (typeof config.callback === "function" ? config.errback : undefined);
 
+            config.styles = _getParsedCssConfigArray(config.styles);
+
             _addConfigToSelector(selector, config);
           } else {
             console.error("Invalid Configuration given for " + selector + "!", config);
           }
+        }
+
+        /**
+         *
+         * @param styleConfigs
+         * @returns {*}
+         * @private
+         */
+        function _getParsedCssConfigArray(styleConfigs) {
+          if (styleConfigs == undefined) {
+            return [];
+          }
+          var type = _JS.getType(styleConfigs);
+
+          if (type === "[object String]") {
+            return [{href: type}];
+          } else if (type === "[object Array]") {
+            var configArray = [];
+            for (var i in styleConfigs) {
+              var styleConfig = _getParsedCssConfig(styleConfigs[i]);
+              styleConfig = _setCssDefaultValues(styleConfig);
+
+              if (styleConfig !== undefined) {
+                configArray.push(styleConfig);
+              }
+            }
+            return configArray;
+          }
+        }
+
+        /**
+         *
+         * @param styleConfig
+         * @returns {undefined|{}}
+         * @private
+         */
+        function _getParsedCssConfig(styleConfig) {
+          if (typeof styleConfig !== "string" && styleConfig.href === undefined) {
+            return undefined;
+          }
+          // If array of strings is configured, parse it
+
+          if (typeof styleConfig == "string") {
+            return _getParsedCssConfig({href: styleConfig});
+          }
+
+          // If href is a string
+          if (typeof styleConfig.href === "string") {
+            // Get Position of Fileending
+            var fileEndingIndex = styleConfig.href.indexOf(".css");
+
+            // If Fileending exists, everythings fine
+
+            if (fileEndingIndex === styleConfig.href.length - 4) {
+              return styleConfig;
+              // If Fileending missing, add .css
+
+            } else if (fileEndingIndex == -1) {
+              styleConfig.href += ".css";
+              return styleConfig;
+            }
+            // If nothing happened before, its clearly broken and should not be executed
+            return undefined;
+          }
+          return undefined;
+        }
+
+        function _setCssDefaultValues(config) {
+          if (typeof config !== "object" || config.href === undefined) {
+            return undefined;
+          }
+          config.rel = config.rel ? config.rel : "stylesheet";
+          config.media = config.media ? config.media : "all";
+          config.type = config.type ? config.type : "text/css";
+          return config;
         }
 
         /**
@@ -125,9 +204,29 @@ define(function() {
         function _loadIfElementExists(requireInstance, selector, config, elementAlreadyFound) {
           if (!!elementAlreadyFound || _checkElementExistence(selector)) {
             requireInstance(config.extensions, config.callback, config.errback);
+            _loadCSS(config.styles);
             return true;
           }
           return false;
+        }
+
+        function _loadCSS(cssConfigs) {
+          if (cssConfigs.length > 0 && _head === undefined) {
+            _head = document.querySelector("head")
+          }
+          for (var i in cssConfigs) {
+            var cssConfig = cssConfigs[i];
+
+            if (_cssLoaded.indexOf(cssConfig.src) === -1) {
+              var link = document.createElement("link");
+              for (var attribute in cssConfig) {
+                var value = cssConfig[attribute];
+                link.setAttribute(attribute, value);
+              }
+              _head.append(link);
+              _cssLoaded.push(cssConfig.src);
+            }
+          }
         }
 
         /**
