@@ -20,7 +20,7 @@ Remove monstrous files and split them for improved reusabilty.
  * abstract code
  * browser support
    * IE9+
-	 * Edge
-	 * Firefox 3.5+
-	 * Chrome 4+
-	 * Opera 10.1+
+   * Edge
+   * Firefox 3.5+
+   * Chrome 4+
+   * Opera 10.1+
