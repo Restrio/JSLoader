@@ -5,7 +5,7 @@ define(["JS"], function(JS) {
     var contentType = document.querySelector("meta[name='type']").getAttribute("type"),
         headline = document.getElementById("headline");
 
-    headline.classList.add(contentType);
+    headline.className += contentType;
     headline.innerHTML = contentType;
   });
 });

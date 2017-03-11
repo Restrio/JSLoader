@@ -11,16 +11,16 @@ Making the user waste less data (mobile first).
 Remove monstrous files and split them for improved reusabilty.  
 
 ### Advantages
- * no jQuery required
- * easy to understand
- * easy to work with
- * high performance
-   * only load the files, the user needs
-   * dependencies are improved css-selectors
- * abstract code
- * browser support
-   * IE9+
-   * Edge
-   * Firefox 3.5+
-   * Chrome 4+
-   * Opera 10.1+
+  * no jQuery required
+  * easy to understand
+  * easy to work with
+  * high performance
+    * only load the files, the user needs
+    * dependencies are improved css-selectors
+  * abstract code
+  * browser support
+    * IE8+
+    * Edge
+    * Firefox 3.5+
+    * Chrome 4+
+    * Opera 10.1+

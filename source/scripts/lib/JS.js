@@ -1,5 +1,45 @@
 define(function() {
   "use strict";
+
+  /**
+   * IE8 fix for indexOf
+   * @type {number}
+   */
+  Array.prototype.indexOf = Array.prototype.indexOf || function(value) {
+    for (var i in this) {
+      if (this[i] === value) {
+        return i;
+      }
+    }
+    return -1;
+  };
+
+  /**
+   * IE8 fix for bind
+   * @type {Function}
+   */
+  Function.prototype.bind = Function.prototype.bind || function(oThis) {
+    if (typeof this !== 'function') {
+      // closest thing possible to the ECMAScript 5
+      // internal IsCallable function
+      throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+    }
+
+    var aArgs   = Array.prototype.slice.call(arguments, 1),
+      fToBind = this,
+      fNOP    = function() {},
+      fBound  = function() {
+        return fToBind.apply(this instanceof fNOP && oThis
+            ? this
+            : oThis,
+          aArgs.concat(Array.prototype.slice.call(arguments)));
+      };
+
+    fNOP.prototype = this.prototype;
+    fBound.prototype = new fNOP();
+
+    return fBound;
+  };
   
   var _JS = {
     getType: function(variable) {
@@ -20,13 +60,13 @@ define(function() {
     },
     Creater: {
       createInstance: function(obj, arg) {
-        
+        window.o = obj;
         // Create array out of arguments
-        if (_JS.getType(arg) === "[object Arguments]") {
-          arg = Array.prototype.slice.call(arg);
-        }
+        arg = Array.prototype.slice.call(arg);
+
         // add empty value at position 0 to make sure all parameters pass correctly
         arg.splice(0, 0, undefined);
+
         // This adds all parameters from getInstance to the constructor
         return new (obj.bind.apply(obj, arg))();
       }
@@ -59,7 +99,7 @@ define(function() {
           var configType = _JS.getType(config);
 
           if (configType === "[object Array]") {
-            for (var index in config) {
+            for (var index = 0; index < config.length; index++) {
               _parseConfigNode(selector, config[index]);
             }
           } else if (configType === "[object Object]" && config.hasOwnProperty("extensions")) {
@@ -96,7 +136,7 @@ define(function() {
 
             case "[object Array]":
               var configArray = [];
-              for (var i in styleConfigs) {
+              for (var i = 0; i < styleConfigs.length; i++) {
                 var styleConfig = _getParsedCssConfig(styleConfigs[i]);
                 styleConfig = _setCssDefaultValues(styleConfig);
 
@@ -120,9 +160,9 @@ define(function() {
           if (typeof styleConfig !== "string" && styleConfig.href === undefined) {
             return undefined;
           }
-          // If array of strings is configured, parse it
 
-          if (typeof styleConfig == "string") {
+          // If array of strings is configured, parse it
+          if (typeof styleConfig === "string") {
             return _getParsedCssConfig({href: styleConfig});
           }
 
@@ -135,8 +175,8 @@ define(function() {
             // If Fileending exists, everythings fine
             if (fileEndingIndex === styleConfig.href.length - 4) {
               return styleConfig;
-              // If Fileending missing, add .css
 
+              // If Fileending missing, add .css
             } else if (fileEndingIndex == -1) {
               styleConfig.href += ".css";
               return styleConfig;
@@ -182,7 +222,7 @@ define(function() {
          * @private
          */
         function _loadAll(requireInstance) {
-          if (_JS.getType(requireInstance) !== "[object Object]") {
+          if (requireInstance === undefined) {
             requireInstance = requireBase;
           }
           for (var index in _config) {
@@ -199,7 +239,7 @@ define(function() {
          */
         function _load(requireInstance, selector, configArray) {
           var result = false;
-          for (var index in configArray) {
+          for (var index = 0; index < configArray.length; index++) {
             result = _loadIfElementExists(requireInstance, selector, configArray[index], result);
             if (!result) {
               break;
@@ -216,7 +256,19 @@ define(function() {
           if (_firstLoad) {
             _firstLoad = false;
             for (var i = 0; i < document.styleSheets.length; i++) {
-              _cssLoaded.push(document.styleSheets[i].ownerNode.getAttribute("href"));
+              var useIE = document.styleSheets[i].ownerNode === undefined;
+              var owner = document.styleSheets[i].ownerNode || document.styleSheets[i].owningElement;
+              if (useIE) {
+                for (var j = 0; i < owner.length; j++) {
+                  if (owner[j].name === "href") {
+                    owner = owner[j];
+                    break;
+                  }
+                }
+                _cssLoaded.push(owner.value);
+              } else {
+                owner.getAttribute("href");
+              }
             }
           }
         }
@@ -249,7 +301,7 @@ define(function() {
             _head = document.querySelector("head")
           }
           // for each configuration
-          for (var i in cssConfigs) {
+          for (var i = 0; i < cssConfigs.length; i++) {
             var cssConfig = cssConfigs[i];
 
             // Only Create Element, if css not already loaded
@@ -263,7 +315,7 @@ define(function() {
               }
 
               // Add link element and
-              _head.append(link);
+              _head.appendChild(link);
               _cssLoaded.push(cssConfig.href);
             }
           }
@@ -290,7 +342,7 @@ define(function() {
           var result,
             selectors = selector.split("||");
 
-          for (var i in selectors) {
+          for (var i = 0; i < selectors.length; i++) {
             result = _parseAnd(selectors[i]);
             if (result) {
               break;
@@ -310,7 +362,7 @@ define(function() {
           var result,
             selectors = selector.split("&&");
 
-          for (var i in selectors) {
+          for (var i = 0; i < selectors.length; i++) {
             result = _parseNot(selectors[i]);
             if (!result) {
               break;

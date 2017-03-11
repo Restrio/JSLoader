@@ -1,1 +1,1 @@
-"use strict";define(["JS"],function(e){e.getEventer().windowLoad(function(){var e=document.querySelector("meta[name='type']").getAttribute("type"),t=document.getElementById("headline");t.classList.add(e),t.innerHTML=e})});
+"use strict";define(["JS"],function(e){e.getEventer().windowLoad(function(){var e=document.querySelector("meta[name='type']").getAttribute("type"),t=document.getElementById("headline");t.className+=e,t.innerHTML=e})});
