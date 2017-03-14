@@ -1,1 +1,1 @@
-"use strict";define(["JS"],function(e){e.getEventer().windowLoad(function(){var e=document.querySelector("meta[name='type']").getAttribute("type"),t=document.getElementById("headline");t.className+=e,t.innerHTML=e})});
+"use strict";define(["JS"],function(e){e.getEventer().windowLoad(function(){var t=document.querySelector("meta[name='type']").getAttribute("type"),n=document.getElementById("headline");n.className+=t,n.innerHTML=t,console.log("AJAX",e.Ajax);var o=e.Ajax.get("/testfile.php");console.log(o)})});
