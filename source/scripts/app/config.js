@@ -5,6 +5,8 @@ define(["JS"], function(JS) {
     return "assets/css/" + file + ".css";
   }
 
+  console.log(loader);
+
   loader.addConfig({
     // External Configured Object
     "#moveable": {

@@ -7,5 +7,8 @@ define(["JS"], function(JS) {
 
     headline.className += contentType;
     headline.innerHTML = contentType;
+
+    var Get = JS.Ajax.get("URL");
+    console.log(Get);
   });
 });

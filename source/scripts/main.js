@@ -2,7 +2,7 @@
 var requireBase;
 requireBase = requirejs.config({
   "context": (new Date()).getTime(),
-  "baseUrl": "assets/scripts",
+  "baseUrl": (window.isDev === true ? "source" : "assets") + "/scripts",
   "paths": {
     "app": "app",
     "lib": "lib",

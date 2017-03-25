@@ -205,7 +205,7 @@ define(function() {
             for (var index = 0; index < config.length; index++) {
               _parseConfigNode(selector, config[index]);
             }
-          } else if (configType === "[object Object]" && config.hasOwnProperty("extensions")) {
+          } else if (configType === "[object Object]") {
             // Validate Callback
             var functionDefaults = {
               callback: undefined,
@@ -214,6 +214,11 @@ define(function() {
 
             for (var i in functionDefaults) {
               config[i] = typeof config[i] === "function" ? config[i] : functionDefaults[i];
+            }
+
+            // Default value for extensions if not set, to identify later
+            if (!config.hasOwnProperty("extensions") || _JS.getType(config.extensions) !== "[object Array]") {
+              config.extensions = null;
             }
 
             config.styles = _getParsedCssConfigArray(config.styles);
@@ -234,7 +239,7 @@ define(function() {
           var result = [];
           switch (_JS.getType(styleConfigs)) {
             case "[object String]":
-              result = [{href: type}];
+              result = [{href: styleConfigs}];
               break;
 
             case "[object Array]":
@@ -387,8 +392,10 @@ define(function() {
          */
         function _loadIfElementExists(requireInstance, selector, config, elementAlreadyFound) {
           if (!!elementAlreadyFound || _checkElementExistence(selector)) {
-            requireInstance(config.extensions, config.callback, config.errback);
             _loadCSS(config.styles);
+            if (config.extensions !== null) {
+              requireInstance(config.extensions, config.callback, config.errback);
+            }
             return true;
           }
           return false;
