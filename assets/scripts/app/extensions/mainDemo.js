@@ -1,1 +1,1 @@
-define(["extensions/lib/DemoModule"],function(e){var o=new e("#moveable");o.moveH(20,50).moveV(100,700).moveH(-30).moveV(110,1e3).wait(500).moveH(10,50).moveV(-210,50)});
+define(["extensions/lib/DemoModule"],function(e){var n=new e("#moveable");n.setColorInterval(["blue","yellow","green","rgba(123, 0, 77, 0.3)","#34D7AE"],250),setTimeout(function(){"use strict";n.clearInterval()},5e3)});

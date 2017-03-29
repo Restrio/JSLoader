@@ -1,85 +1,47 @@
-define(["JS", "lib/jquery"], function (JS) {
-  var $j = jQuery.noConflict();
+define(["JS"], function (JS) {
   "use strict";
+
   return function() {
     var _object,
+      _colors,
+      _currentIndex,
+      _interval,
       DemoModule;
 
-    /**
-     *
-     * @param {number} px - pixels to move
-     * @param {string} axis - top or left
-     */
-    function _move(px, duration, axis, callback) {
-      if (typeof callback != "function") {
-        callback = function(){};
-      }
-
-      if (duration == undefined) {
-        duration = 500;
-      }
-
-      // Move up or down
-      if (axis == "top") {
-        _object.animate({
-          top: "+=" + px
-        }, duration, callback);
-
-        // Move left or right
-      } else if ( axis == "left") {
-        _object.animate({
-          left: "+=" + px
-        }, duration);
-      }
-      return callback();
-    }
-
     DemoModule = function(selector) {
-      _object = $j(selector);
-      if (_object.length == 1) {
-        _object.css("position", "relative");
+      _object = document.querySelector(selector);
+      if (_object !== null) {
+        _object.style.backgroundColor = "white";
+        _object.style.borderStyle = "solid";
+        _object.style.borderColor = "black";
+        _object.style.borderWidth = "1px";
       } else {
         return {};
       }
     };
 
-    /**
-     *
-     * @param {string} selector - jQuery-selector
-     * @returns {DemoModule|bool} - false if invalid selector
-     * @constructor
-     */
     DemoModule.prototype = {
-      /**
-       * Move object X Pixels down
-       * Negative Number for up
-       * @param {number} px
-       * @chaineable
-       */
-      moveV: function(px, duration) {
-        _move(px, duration, "top");
-        return this;
-      },
+      setColorInterval: function(colors, time) {
+        if (_interval === undefined) {
+          _colors = colors;
+          _currentIndex = 0;
 
-      /**
-       * Move object X Pixels right
-       * Negative Number for left
-       * @param {number} px
-       * @chainable
-       */
-      moveH: function(px, duration) {
-        _move(px, duration, "left");
-        return this;
-      },
+          _interval = setInterval(function() {
+            _object.style.backgroundColor = _colors[_currentIndex];
 
-      /**
-       *
-       * @param {number} duration
-       * @chainable
-       */
-      wait: function(duration) {
-        _object.delay(duration);
-        return this;
+            if (_currentIndex+1 < _colors.length) {
+              _currentIndex++;
+            } else {
+              _currentIndex = 0;
+            }
+          }, time);
+        }
+      },
+      clearInterval: function() {
+        clearInterval(_interval);
+        _interval = undefined;
+        _colors = undefined;
+        _currentIndex = undefined;
       }
     };
 

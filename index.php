@@ -14,7 +14,7 @@
   </head>
   <body>
     <div id="headline"></div>
-    <a href="notIndex.html">change Page</a>
+    <a href="notIndex.php">change Page</a>
     <div id="moveable" class="moveable"></div>
     <div class="moveable"></div>
   </body>

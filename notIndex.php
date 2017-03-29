@@ -8,6 +8,6 @@
   </head>
   <body>
     <div id="headline"></div>
-    <a href="index.html">change Page</a>
+    <a href="index.php">change Page</a>
   </body>
 </html>
