@@ -1,45 +1,5 @@
-define(function() {
+define((navigator.userAgent.indexOf("MSIE 8.0") > -1 ? ["lib/IE8_Polyfill"] : []), function() {
   "use strict";
-
-  /**
-   * IE8 fix for indexOf
-   * @type {number}
-   */
-  Array.prototype.indexOf = Array.prototype.indexOf || function(value) {
-    for (var i in this) {
-      if (this[i] === value) {
-        return i;
-      }
-    }
-    return -1;
-  };
-
-  /**
-   * IE8 fix for bind
-   * @type {Function}
-   */
-  Function.prototype.bind = Function.prototype.bind || function(oThis) {
-    if (typeof this !== 'function') {
-      // closest thing possible to the ECMAScript 5
-      // internal IsCallable function
-      throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
-    }
-
-    var aArgs   = Array.prototype.slice.call(arguments, 1),
-      fToBind = this,
-      fNOP    = function() {},
-      fBound  = function() {
-        return fToBind.apply(this instanceof fNOP && oThis
-            ? this
-            : oThis,
-          aArgs.concat(Array.prototype.slice.call(arguments)));
-      };
-
-    fNOP.prototype = this.prototype;
-    fBound.prototype = new fNOP();
-
-    return fBound;
-  };
   
   var _JS = {
     getType: function(variable) {
@@ -49,12 +9,16 @@ define(function() {
       windowLoad: function(callback) {
         if (typeof callback === "function") {
           if (document.readyState !== "complete") {
+
+            // If window is not already fully loaded, add EventListener
             window.addEventListener("load", callback);
           } else {
+
+            // If window is fully loaded, execute callback instantly
             return callback();
           }
         } else {
-          return false;
+          return null;
         }
       }
     },
@@ -177,7 +141,7 @@ define(function() {
     Loader: function() {
       return new (function() {
         var _config = {},
-            _cssLoaded = [],
+            _loadedStylesheets = [],
             _head = undefined,
             _firstLoad = true;
 
@@ -363,20 +327,14 @@ define(function() {
         function _findLoadedCss() {
           if (_firstLoad) {
             _firstLoad = false;
+
+            // Foreach Stylesheet
             for (var i = 0; i < document.styleSheets.length; i++) {
-              var useIE = document.styleSheets[i].ownerNode === undefined;
-              var owner = document.styleSheets[i].ownerNode || document.styleSheets[i].owningElement;
-              if (useIE) {
-                for (var j = 0; i < owner.length; j++) {
-                  if (owner[j].name === "href") {
-                    owner = owner[j];
-                    break;
-                  }
-                }
-                _cssLoaded.push(owner.value);
-              } else {
-                owner.getAttribute("href");
-              }
+
+              // Save Href of Stylesheet in Array
+              var attributes = document.styleSheets[i].ownerNode.attributes;
+              _loadedStylesheets.push(attributes.getNamedItem("href").value);
+
             }
           }
         }
@@ -415,7 +373,7 @@ define(function() {
             var cssConfig = cssConfigs[i];
 
             // Only Create Element, if css not already loaded
-            if (_cssLoaded.indexOf(cssConfig.href) === -1) {
+            if (_loadedStylesheets.indexOf(cssConfig.href) === -1) {
               var link = document.createElement("link");
 
               // Apply attributes to link element
@@ -426,7 +384,7 @@ define(function() {
 
               // Add link element and
               _head.appendChild(link);
-              _cssLoaded.push(cssConfig.href);
+              _loadedStylesheets.push(cssConfig.href);
             }
           }
         }
