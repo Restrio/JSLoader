@@ -348,7 +348,7 @@ define((navigator.userAgent.indexOf("MSIE 8.0") > -1 ? ["lib/IE8_Polyfill"] : []
             selector = selector.split("!").pop();
           }
 
-          var element = !document.querySelector(selector);
+          var element = document.querySelector(selector);
 
           return negate ? !element: !!element;
         }
