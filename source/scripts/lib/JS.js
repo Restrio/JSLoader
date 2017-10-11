@@ -1,3 +1,6 @@
+/**
+ * @returns JS
+ */
 define((navigator.userAgent.indexOf("MSIE 8.0") > -1 ? ["lib/IE8_Polyfill"] : []), function() {
   "use strict";
   
@@ -34,12 +37,14 @@ define((navigator.userAgent.indexOf("MSIE 8.0") > -1 ? ["lib/IE8_Polyfill"] : []
         return new (obj.bind.apply(obj, arg))();
       }
     },
-    Loader: function() {
+    Loader: function(base, functionDefaults) {
       return new (function() {
         var _config = {},
             _loadedStylesheets = [],
             _head = undefined,
-            _firstLoad = true;
+            _firstLoad = true,
+            _base = document,
+            _functionDefaults;
 
         /**
          * Splits Selectors from Configurations
@@ -48,8 +53,10 @@ define((navigator.userAgent.indexOf("MSIE 8.0") > -1 ? ["lib/IE8_Polyfill"] : []
          */
         function _parseConfig(config) {
           for (var selector in config) {
+            if (config.hasOwnProperty(selector)) {
             _parseConfigNode(selector, config[selector]);
           }
+        }
         }
 
         /**
@@ -66,14 +73,9 @@ define((navigator.userAgent.indexOf("MSIE 8.0") > -1 ? ["lib/IE8_Polyfill"] : []
               _parseConfigNode(selector, config[index]);
             }
           } else if (configType === "[object Object]") {
-            // Validate Callback
-            var functionDefaults = {
-              callback: undefined,
-              errback: undefined
-            };
 
-            for (var i in functionDefaults) {
-              config[i] = typeof config[i] === "function" ? config[i] : functionDefaults[i];
+            for (var i in _functionDefaults) {
+              config[i] = typeof config[i] === "function" ? config[i] : _functionDefaults[i];
             }
 
             // Default value for extensions if not set, to identify later
@@ -145,7 +147,7 @@ define((navigator.userAgent.indexOf("MSIE 8.0") > -1 ? ["lib/IE8_Polyfill"] : []
               return styleConfig;
 
               // If Fileending missing, add .css
-            } else if (fileEndingIndex == -1) {
+            } else if (fileEndingIndex === -1) {
               styleConfig.href += ".css";
               return styleConfig;
             }
@@ -229,7 +231,10 @@ define((navigator.userAgent.indexOf("MSIE 8.0") > -1 ? ["lib/IE8_Polyfill"] : []
 
               // Save Href of Stylesheet in Array
               var attributes = document.styleSheets[i].ownerNode.attributes;
-              _loadedStylesheets.push(attributes.getNamedItem("href").value);
+              var href = attributes.getNamedItem("href");
+              if (!!href){
+                _loadedStylesheets.push(href.value);
+              }
 
             }
           }
@@ -348,12 +353,18 @@ define((navigator.userAgent.indexOf("MSIE 8.0") > -1 ? ["lib/IE8_Polyfill"] : []
             selector = selector.split("!").pop();
           }
 
-          var element = document.querySelector(selector);
-
+          var element = _base.querySelector(selector);
           return negate ? !element: !!element;
         }
 
-        var Loader = function() {};
+        var Loader = function(base, functionDefaults) {
+          _base = base || document;
+          
+          functionDefaults.callback = functionDefaults.callback || function() {};
+          functionDefaults.errback = functionDefaults.errback || function() {};
+          
+          _functionDefaults = functionDefaults;
+        };
 
         Loader.prototype = {
           getConfig: function() {
@@ -382,14 +393,14 @@ define((navigator.userAgent.indexOf("MSIE 8.0") > -1 ? ["lib/IE8_Polyfill"] : []
           }
         };
 
-        return new Loader();
+        return new Loader(base, functionDefaults);
       })();
     }
   };
 
   return {
-    getLoader: function() {
-      return _JS.Loader();
+    getLoader: function(base, functionDefaults) {
+      return _JS.Loader(base || document, functionDefaults || {});
     },
     getEventer: function() {
       return _JS.Eventer;
