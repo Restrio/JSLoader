@@ -54,9 +54,9 @@ define((navigator.userAgent.indexOf("MSIE 8.0") > -1 ? ["lib/IE8_Polyfill"] : []
         function _parseConfig(config) {
           for (var selector in config) {
             if (config.hasOwnProperty(selector)) {
-            _parseConfigNode(selector, config[selector]);
+              _parseConfigNode(selector, config[selector]);
+            }
           }
-        }
         }
 
         /**
@@ -101,7 +101,7 @@ define((navigator.userAgent.indexOf("MSIE 8.0") > -1 ? ["lib/IE8_Polyfill"] : []
           var result = [];
           switch (_JS.getType(styleConfigs)) {
             case "[object String]":
-              result = [{href: styleConfigs}];
+              result = [{href: styleConfigs, rel: "stylesheet"}];
               break;
 
             case "[object Array]":
@@ -279,8 +279,10 @@ define((navigator.userAgent.indexOf("MSIE 8.0") > -1 ? ["lib/IE8_Polyfill"] : []
 
               // Apply attributes to link element
               for (var attribute in cssConfig) {
-                var value = cssConfig[attribute];
-                link.setAttribute(attribute, value);
+                if(cssConfig.hasOwnProperty(attribute)){
+                  var value = cssConfig[attribute];
+                  link.setAttribute(attribute, value);
+                }
               }
 
               // Add link element and
