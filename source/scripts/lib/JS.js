@@ -35,6 +35,21 @@ define((navigator.userAgent.indexOf("MSIE 8.0") > -1 ? ["lib/IE8_Polyfill"] : []
 
         // This adds all parameters from getInstance to the constructor
         return new (obj.bind.apply(obj, arg))();
+      },
+      createPrototype: function(parentClass, childPrototype) {
+        var parsedPrototype = {};
+
+        for (var param in childPrototype) {
+          if (childPrototype.hasOwnProperty(param)) {
+            parsedPrototype[param] = {
+              value: childPrototype[param],
+              writable: true,
+              configurable: true
+            };
+          }
+        }
+        
+        return Object.create(parentClass.__proto__, parsedPrototype);
       }
     },
     Loader: function(base, functionDefaults) {
