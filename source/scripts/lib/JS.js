@@ -44,12 +44,24 @@ define((navigator.userAgent.indexOf("MSIE 8.0") > -1 ? ["lib/IE8_Polyfill"] : []
             parsedPrototype[param] = {
               value: childPrototype[param],
               writable: true,
-              configurable: true
+              configurable: true,
+              enumerable: true
             };
           }
         }
         
-        return Object.create(parentClass.__proto__, parsedPrototype);
+        return Object.create(parentClass, parsedPrototype);
+      },
+      createMonkeyPatch: function(parent, patch) {
+        var name = patch.name;
+        if (name.length > 0 && !parent[name]) {
+          Object.defineProperty(parent, name, {
+            writable: false,
+            configurable: false,
+            enumerable: false,
+            value: patch
+          });
+        }
       }
     },
     Loader: function(base, functionDefaults) {
