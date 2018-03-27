@@ -278,7 +278,7 @@ define((navigator.userAgent.indexOf("MSIE 8.0") > -1 ? ["lib/IE8_Polyfill"] : []
          */
         function _loadIfElementExists(requireInstance, selector, config, elementAlreadyFound) {
           if (!!elementAlreadyFound || _checkElementExistence(selector)) {
-            _loadCSS(config.styles);
+            _loadCSS(requireInstance, config.styles);
             if (config.extensions !== null) {
               requireInstance(config.extensions, config.callback, config.errback);
             }
@@ -292,13 +292,15 @@ define((navigator.userAgent.indexOf("MSIE 8.0") > -1 ? ["lib/IE8_Polyfill"] : []
          * @param cssConfigs[]
          * @private
          */
-        function _loadCSS(cssConfigs) {
+        function _loadCSS(requireInstance, cssConfigs) {
           if (cssConfigs.length > 0 && _head === undefined) {
             _head = document.querySelector("head")
           }
           // for each configuration
           for (var i = 0; i < cssConfigs.length; i++) {
             var cssConfig = cssConfigs[i];
+
+            cssConfig.href = requireInstance.toUrl(cssConfig.href);
 
             // Only Create Element, if css not already loaded
             if (_loadedStylesheets.indexOf(cssConfig.href) === -1) {
